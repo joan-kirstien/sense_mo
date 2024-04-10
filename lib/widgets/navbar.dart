@@ -28,16 +28,16 @@ class _NavBarState extends State<NavBar> {
           color: const Color(0xFF00BF62),
           activeColor: Colors.black,
           tabBackgroundColor: const Color(0xFF00BF62),
-          padding: const EdgeInsets.all(10),
-          gap: 10,
+          padding: const EdgeInsets.all(15),
+          gap: 8,
           tabs: const [
             GButton(
-              icon: Icons.home,
-              text: 'Home'
+              icon: Icons.home,iconSize: 20,
+              text: 'Home', textSize: 20,
             ), 
             GButton(
-              icon: Icons.settings,
-              text: 'Settings'
+              icon: Icons.settings,iconSize: 20,
+              text: 'Settings', textSize: 20,
             )
           ],
     );
