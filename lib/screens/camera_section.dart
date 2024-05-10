@@ -195,6 +195,8 @@ class _ImageUploadState extends State<ImageUpload> {
     });
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -322,7 +324,7 @@ class _VideoUploadState extends State<VideoUpload> {
                   fontSize: 25,
                   color: Color(0xFF00BF62),
                 ),
-              ),
+              )
           ],
         ),
     )

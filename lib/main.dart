@@ -1,5 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ui_sensemo/model/user.dart';
 import 'package:ui_sensemo/screens/landing_page.dart';
 
 List<CameraDescription>? cameras;
@@ -7,7 +9,12 @@ List<CameraDescription>? cameras;
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

@@ -1,16 +1,126 @@
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ui_sensemo/model/user.dart';
 import 'package:ui_sensemo/screens/create_account.dart';
 import 'package:ui_sensemo/screens/home_screen.dart';
+import 'package:http/http.dart' as http;
+import 'package:ui_sensemo/model/user.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
 
   @override
   State<LandingPage> createState() => _LandingPageState();
+
 }
 
+
 class _LandingPageState extends State<LandingPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+    Widget _buildEmail() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      decoration: BoxDecoration(
+        color: const Color(0xFF404040),
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      child: Row(
+        children: [
+          const SizedBox(width: 10),
+          Expanded(
+            child: TextField(
+              controller: emailController,
+              style: const TextStyle(color: Colors.grey),
+              decoration: const InputDecoration(
+                hintText: 'Enter Email/Username',
+                hintStyle: TextStyle(color: Colors.grey),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPassword() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      decoration: BoxDecoration(
+        color: const Color(0xFF404040),
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      child: Row(
+        children: [
+          const SizedBox(width: 10),
+          Expanded(
+            child: TextField(
+              controller: passwordController,
+              style: const TextStyle(color: Colors.grey),
+              decoration: const InputDecoration(
+                hintText: 'Enter Password',
+                hintStyle: TextStyle(color: Colors.grey),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> loginUser() async {
+    var url = Uri.parse('http://10.0.2.2:8000/api/login/');
+    var response = await http.post(
+      url,
+      body: {
+        'email': emailController.text,
+        'password': passwordController.text,
+      },
+    );
+
+    print('Sent email: ${emailController.text}');
+    print('Sent password: ${passwordController.text}');
+
+    if (response.statusCode == 200) {
+      // Login successful
+      var data = json.decode(response.body);
+      print('Data received: $data');
+
+      final fullName = data['full_name'] ?? '';
+      final phoneNumber = data['phone_num'] ?? '';
+
+      Provider.of<UserProvider>(context, listen: false).setUser(
+        email: emailController.text,
+        fullName: fullName,
+        phoneNumber: phoneNumber,
+      );
+
+      // Print to check if the user information is updated properly
+      final user = Provider.of<UserProvider>(context, listen: false);
+      print('User Info: ${user.fullName}, ${user.email}, ${user.phoneNumber}');
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    } else {
+      // Login failed
+      print('Login failed: ${response.body}');
+    }
+  }
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -50,58 +160,6 @@ class _LandingPageState extends State<LandingPage> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildEmail() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      decoration: BoxDecoration(
-        color: const Color(0xFF404040),
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-      child: const Row(
-        children: [
-          SizedBox(width: 10),
-          Expanded(
-            child: TextField(
-              style: TextStyle(color: Colors.grey),
-              decoration: InputDecoration(
-                hintText: 'Enter Email/Username',
-                hintStyle: TextStyle(color: Colors.grey),
-                border: InputBorder.none,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPassword() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      decoration: BoxDecoration(
-        color: const Color(0xFF404040),
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-      child: const Row(
-        children: [
-          SizedBox(width: 10),
-          Expanded(
-            child: TextField(
-              style: TextStyle(color: Colors.grey),
-              decoration: InputDecoration(
-                hintText: 'Enter Password',
-                hintStyle: TextStyle(color: Colors.grey),
-                border: InputBorder.none,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -146,7 +204,7 @@ class _LandingPageState extends State<LandingPage> {
             Expanded(
               child: InkWell(
                 onTap: () {
-                  navigateToHomePage(context);
+                  loginUser();
                 },
                 child: const TextField(
                   enabled: false,

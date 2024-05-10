@@ -1,7 +1,6 @@
-Happy
 Angry
-Shock
-Disgust
-Sad
+Happy
 Neutral
-Excitement
+Sad
+Disgust
+Shock

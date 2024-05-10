@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:ui_sensemo/model/user.dart';
 import 'package:ui_sensemo/screens/camera_section.dart';
 import 'package:ui_sensemo/screens/settings.dart';
 import 'package:ui_sensemo/widgets/navbar.dart';
@@ -32,7 +34,7 @@ class _HomePageState extends State<HomePage> {
           children: _pages,
         ),
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 160, vertical: 80),
+          padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 50),
           child: NavBar(
             selectedIndex: _selectedIndex,
             onTabChange: _onTabChange,
@@ -49,6 +51,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCamera(BuildContext context) {
+    final user = Provider.of<UserProvider>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -58,7 +61,18 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment
                 .start,
             children: [
-              const SizedBox(height: 50),
+              const SizedBox(height: 10),
+              Padding(
+              padding: const EdgeInsets.only(left: 25.0, top: 20) ,
+              child:
+              Text("Welcome ${user.fullName}",style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 35),
               const Padding(
                 padding: EdgeInsets.only(left: 25.0, top: 20),
                 child: Text(
